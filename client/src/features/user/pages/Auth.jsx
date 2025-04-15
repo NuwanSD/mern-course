@@ -3,15 +3,24 @@ import Button from "../../../app/shared/components/FormElements/Button";
 import Input from "../../../app/shared/components/FormElements/Input";
 import { useForm } from "../../../app/shared/hooks/form-hook";
 
-import "./Auth.css";
 import {
   VALIDATOR_EMAIL,
   VALIDATOR_MINLENGTH,
   VALIDATOR_REQUIRE,
 } from "../../../app/shared/util/validators";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AuthContext } from "../../../app/shared/context/auth-context";
+
+import "./Auth.css";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Auth() {
+  const auth = useContext(AuthContext);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const from = location.state?.from?.pathname || "/";
+
   const [isLogin, setIsLogin] = useState(true);
 
   const [formState, inputHandler, setFormData] = useForm({
@@ -52,6 +61,8 @@ export default function Auth() {
   const authSubmitHandler = (event) => {
     event.preventDefault();
     console.log(formState.inputs);
+    auth.login();
+    navigate(from, { replace: true });
   };
 
   return (
