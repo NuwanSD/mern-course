@@ -96,7 +96,7 @@ export default function PlaceItem({ place, onDelete }) {
             <Button inverse onClick={openMapHandler}>
               View on map
             </Button>
-            {auth.isLoggedIn && (
+            {auth.user_id === place.creator && (
               <>
                 <Button to={`/places/${place.id}`}>Edit</Button>
                 <Button danger onClick={showDeleteWarningHandler}>
