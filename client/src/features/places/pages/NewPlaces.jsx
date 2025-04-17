@@ -44,6 +44,7 @@ export default function NewPlaces() {
 
   const placeSubmitHandler = async (event) => {
     event.preventDefault();
+
     try {
       await sendRequest(
         "http://localhost:5000/api/places",

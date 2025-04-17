@@ -1,37 +1,39 @@
 import PlaceList from "../components/PlaceList";
 import { useParams } from "react-router-dom";
+import { useHttpClient } from "../../../app/shared/hooks/http-hook";
+import ErrorModal from "../../../app/shared/components/UIElements/ErrorModal";
+import LoadingSpinner from "../../../app/shared/components/UIElements/LoadingSpinner";
 
-const places = [
-  {
-    id: "p1",
-    title: "Empire state building",
-    description: "One of the most famous sky scraperts dsdksdsdksdsldslkd",
-    image: "https://picsum.photos/id/237/200/300",
-    address: "20 W 34th St., New York, NY 10001, United States",
-    location: {
-      lag: 40.7484445,
-      lng: -73.9884946,
-    },
-    creator: "u1",
-  },
-  {
-    id: "p2",
-    title: "Empire state building",
-    description: "One of the most famous sky scraperts dsdksdsdksdsldslkd",
-    image: "https://picsum.photos/id/237/200/300",
-    address: "20 W 34th St., New York, NY 10001, United States",
-    location: {
-      lag: 40.7484445,
-      lng: -73.9884946,
-    },
-    creator: "u2",
-  },
-];
+import { useEffect, useState } from "react";
 
 export default function UserPlaces() {
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
+  const [loadedPlaces, setLoadedPlaces] = useState();
+
   const { user_id } = useParams();
 
-  const loadedPlaces = places.filter((place) => place.creator === user_id);
+  useEffect(() => {
+    const fetchPlaces = async () => {
+      try {
+        const responseData = await sendRequest(
+          `http://localhost:5000/api/places/user/${user_id}`
+        );
+        setLoadedPlaces(responseData.places);
+      } catch (error) {}
+    };
 
-  return <PlaceList places={loadedPlaces} />;
+    fetchPlaces();
+  }, [sendRequest, user_id]);
+
+  return (
+    <div>
+      <ErrorModal error={error} onClear={clearError} />
+      {isLoading && (
+        <div className="center">
+          <LoadingSpinner />
+        </div>
+      )}
+      {!isLoading && loadedPlaces && <PlaceList places={loadedPlaces} />}
+    </div>
+  );
 }
