@@ -16,7 +16,7 @@ export default function UserItem({ user }) {
             <div className="user-item__info">
               <h2>{user.name}</h2>
               <h3>
-                {user.places} {user.places === 1 ? "Place" : "Places"}
+                {user.places.length} {user.places === 1 ? "Place" : "Places"}
               </h3>
             </div>
           </Link>
