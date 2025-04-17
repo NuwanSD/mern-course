@@ -13,7 +13,7 @@ export default function NavLinks() {
         <NavLink to="/">All USERS</NavLink>
       </li>
       <li>
-        <NavLink to="/u1/places">MY PLACES</NavLink>
+        <NavLink to={`/${auth.user_id}/places`}>MY PLACES</NavLink>
       </li>
       <li>
         <NavLink to="/places/new">ADD PLACES</NavLink>
