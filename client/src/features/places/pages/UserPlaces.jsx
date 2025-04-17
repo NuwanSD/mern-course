@@ -25,6 +25,12 @@ export default function UserPlaces() {
     fetchPlaces();
   }, [sendRequest, user_id]);
 
+  const placeDeleteHandler = (deletedPlaceId) => {
+    setLoadedPlaces((prevPlaces) =>
+      prevPlaces.filter((place) => place.id !== deletedPlaceId)
+    );
+  };
+
   return (
     <div>
       <ErrorModal error={error} onClear={clearError} />
@@ -33,7 +39,9 @@ export default function UserPlaces() {
           <LoadingSpinner />
         </div>
       )}
-      {!isLoading && loadedPlaces && <PlaceList places={loadedPlaces} />}
+      {!isLoading && loadedPlaces && (
+        <PlaceList places={loadedPlaces} onDeletePlace={placeDeleteHandler} />
+      )}
     </div>
   );
 }
