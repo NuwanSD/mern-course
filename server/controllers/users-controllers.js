@@ -1,16 +1,6 @@
 const { validationResult } = require("express-validator");
-
 const HttpError = require("../models/http-error");
 const User = require("../models/user");
-
-const DUMMY_USERS = [
-  {
-    id: "u1",
-    name: "John Doe",
-    email: "test@test.com",
-    password: "testers",
-  },
-];
 
 const getUsers = async (req, res, next) => {
   let users;
@@ -36,7 +26,7 @@ const signup = async (req, res, next) => {
     );
   }
 
-  const { name, email, password, places } = req.body;
+  const { name, email, password } = req.body;
 
   let existingUser;
   try {
@@ -60,7 +50,7 @@ const signup = async (req, res, next) => {
     image:
       "https://fastly.picsum.photos/id/1049/200/200.jpg?hmac=9458e0GuMIU0518gk-YBqEGna1AnYjhDQGPEXFp-J04",
     password,
-    places,
+    places: [],
   });
 
   try {
