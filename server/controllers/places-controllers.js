@@ -62,13 +62,16 @@ const createPlace = async (req, res, next) => {
     throw new HttpError("Invalid inputs passed, please check your data", 422);
   }
 
-  const { title, description, coordinates, address, creator } = req.body;
+  const { title, description, address, creator } = req.body;
 
   const createdPlace = new Place({
     title,
     description,
     address,
-    location: coordinates,
+    location: {
+      lag: 40.7484445,
+      lng: -73.9884946,
+    },
     image:
       "https://fastly.picsum.photos/id/1049/200/200.jpg?hmac=9458e0GuMIU0518gk-YBqEGna1AnYjhDQGPEXFp-J04",
     creator,
