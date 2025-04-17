@@ -2,6 +2,7 @@ const { v4: uuidv4 } = require("uuid");
 const { validationResult } = require("express-validator");
 
 const HttpError = require("../models/http-error");
+const Place = require("../models/place");
 
 let DUMMY_PLACES = [
   {
@@ -17,26 +18,45 @@ let DUMMY_PLACES = [
   },
 ];
 
-const getPlaceById = (req, res, next) => {
+const getPlaceById = async (req, res, next) => {
   const place_id = req.params.pid;
 
-  const place = DUMMY_PLACES.find((p) => {
-    return p.id === place_id;
-  });
+  let place;
 
-  if (!place) {
-    throw new HttpError("Could not find a place for the provided id.", 404);
+  try {
+    place = await Place.findById(place_id);
+  } catch (error) {
+    const err = new HttpError(
+      "Something went wrong, could not find a place",
+      500
+    );
+    return next(err); //this will prevent the execution of other statement after this
   }
 
-  res.json({ place });
+  if (!place) {
+    const error = new HttpError(
+      "Could not find a place for the provided id.",
+      404
+    );
+    return next(error);
+  }
+
+  res.json({ place: place.toObject({ getters: true }) });
 };
 
-const getPlacesByUserId = (req, res, next) => {
+const getPlacesByUserId = async (req, res, next) => {
   const user_id = req.params.uid;
 
-  const places = DUMMY_PLACES.filter((p) => {
-    return p.creator === user_id;
-  });
+  let places;
+  try {
+    places = await Place.find({ creator: user_id });
+  } catch (error) {
+    const err = new HttpError(
+      "Fetching places failed, please try again later",
+      500
+    );
+    return next(err);
+  }
 
   if (!places || places.length === 0) {
     return next(
@@ -44,10 +64,12 @@ const getPlacesByUserId = (req, res, next) => {
     );
   }
 
-  res.json({ places });
+  res.json({
+    places: places.map((place) => place.toObject({ getters: true })),
+  });
 };
 
-const createPlace = (req, res, next) => {
+const createPlace = async (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -56,16 +78,25 @@ const createPlace = (req, res, next) => {
 
   const { title, description, coordinates, address, creator } = req.body;
 
-  const createdPlace = {
-    id: uuidv4(),
+  const createdPlace = new Place({
     title,
     description,
-    location: coordinates,
     address,
+    location: coordinates,
+    image:
+      "https://fastly.picsum.photos/id/1049/200/200.jpg?hmac=9458e0GuMIU0518gk-YBqEGna1AnYjhDQGPEXFp-J04",
     creator,
-  };
+  });
 
-  DUMMY_PLACES.push(createdPlace);
+  try {
+    await createdPlace.save();
+  } catch (err) {
+    const error = new HttpError(
+      "Creating place failed, please try again.",
+      500
+    );
+    return next(error);
+  }
 
   res.status(201).json({ place: createdPlace });
 };
