@@ -1,4 +1,4 @@
-import { act, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export const useHttpClient = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -18,7 +18,7 @@ export const useHttpClient = () => {
           method,
           body,
           headers,
-          signal: httpAbortCtrl.signal,
+          //signal: httpAbortCtrl.signal,
         });
 
         const responseData = await response.json();
