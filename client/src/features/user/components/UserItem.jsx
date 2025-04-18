@@ -11,7 +11,10 @@ export default function UserItem({ user }) {
         <Card>
           <Link to={`/${user.id}/places`}>
             <div className="user-item__image">
-              <Avatar image={User} alt={user.name} />
+              <Avatar
+                image={`http://localhost:5000/${user.image}` || User}
+                alt={user.name}
+              />
             </div>
             <div className="user-item__info">
               <h2>{user.name}</h2>
