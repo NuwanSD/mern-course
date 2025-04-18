@@ -1,6 +1,7 @@
 import Card from "../../../app/shared/components/UIElements/Card";
 import Button from "../../../app/shared/components/FormElements/Button";
 import Input from "../../../app/shared/components/FormElements/Input";
+import ImageUpload from "../../../app/shared/components/UIElements/ImageUpload";
 import ErrorModal from "../../../app/shared/components/UIElements/ErrorModal";
 import LoadingSpinner from "../../../app/shared/components/UIElements/LoadingSpinner";
 
@@ -56,6 +57,10 @@ export default function Auth() {
             value: "",
             isValid: false,
           },
+          image: {
+            value: null,
+            isValid: false,
+          },
         },
         false
       );
@@ -65,6 +70,8 @@ export default function Auth() {
 
   const authSubmitHandler = async (event) => {
     event.preventDefault();
+
+    console.log(formState.inputs);
 
     if (isLogin) {
       try {
@@ -126,6 +133,7 @@ export default function Auth() {
               onInput={inputHandler}
             />
           )}
+          {!isLogin && <ImageUpload center id="image" onInput={inputHandler} />}
           <Input
             element="input"
             id="email"
