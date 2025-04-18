@@ -1,8 +1,11 @@
+const fs = require("fs");
+
 const { validationResult } = require("express-validator");
 const HttpError = require("../models/http-error");
 const Place = require("../models/place");
 const User = require("../models/user");
 const mongoose = require("mongoose");
+const place = require("../models/place");
 
 const getPlaceById = async (req, res, next) => {
   const place_id = req.params.pid;
@@ -72,8 +75,7 @@ const createPlace = async (req, res, next) => {
       lag: 40.7484445,
       lng: -73.9884946,
     },
-    image:
-      "https://fastly.picsum.photos/id/1049/200/200.jpg?hmac=9458e0GuMIU0518gk-YBqEGna1AnYjhDQGPEXFp-J04",
+    image: req.file.path,
     creator,
   });
 
@@ -90,8 +92,6 @@ const createPlace = async (req, res, next) => {
     const error = new HttpError("Could not find user for provided id", 404);
     return next(error);
   }
-
-  console.log(user);
 
   try {
     const currentSession = await mongoose.startSession();
@@ -172,6 +172,8 @@ const deletePlace = async (req, res, next) => {
     return next(new HttpError("Could not find place for this id", 404));
   }
 
+  const imagePath = place.image;
+
   try {
     const session = await mongoose.startSession();
     session.startTransaction();
@@ -184,6 +186,10 @@ const deletePlace = async (req, res, next) => {
   } catch (error) {
     return next(new HttpError("Deleting place failed, try again", 500));
   }
+
+  fs.unlink(imagePath, (err) => {
+    console.log(err);
+  });
 
   res.status(200).json({ message: "Deleted place." });
 };
