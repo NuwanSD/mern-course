@@ -58,9 +58,14 @@ export default function NewPlaces() {
       formData.append("creator", auth.user_id);
       formData.append("image", formState.inputs.image.value);
 
-      await sendRequest("http://localhost:5000/api/places", "POST", formData);
+      await sendRequest("http://localhost:5000/api/places", "POST", formData, {
+        Authorization: "Bearer " + auth.token,
+      });
+
       navigate("/");
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

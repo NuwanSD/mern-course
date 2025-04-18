@@ -71,8 +71,6 @@ export default function Auth() {
   const authSubmitHandler = async (event) => {
     event.preventDefault();
 
-    console.log(formState.inputs);
-
     if (isLogin) {
       try {
         const responseData = await sendRequest(
@@ -86,7 +84,9 @@ export default function Auth() {
             "Content-Type": "application/json",
           }
         );
-        auth.login(responseData.user.id);
+
+        auth.login(responseData.user_id, responseData.token);
+
         navigate(from, { replace: true });
       } catch (error) {
         console.log(error);

@@ -35,7 +35,11 @@ export default function PlaceItem({ place, onDelete }) {
     try {
       await sendRequest(
         `http://localhost:5000/api/places/${place.id}`,
-        "DELETE"
+        "DELETE",
+        null,
+        {
+          Authorization: "Bearer " + auth.token,
+        }
       );
 
       onDelete(place.id);

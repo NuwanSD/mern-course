@@ -81,10 +81,13 @@ export default function UpdatePlace() {
         }),
         {
           "Content-Type": "application/json",
+          Authorization: "Bearer " + auth.token,
         }
       );
       navigate(`/${auth.user_id}/places`);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   if (isLoading) {
